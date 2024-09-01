@@ -1,0 +1,12 @@
+{
+	"files.associations": {
+		"*.eex": "eex",
+		"*.heex": "phoenix-heex",
+		"*.html": "html",
+		"*.module": "php",
+		"*css": "css",
+		"i": "plaintext",
+		"*.scss": "scss",
+		"sleep.h": "c"
+	}
+}
