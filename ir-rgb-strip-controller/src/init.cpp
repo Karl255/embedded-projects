@@ -18,11 +18,11 @@ void init(void) {
 
 	// dual use of Timer 1: PWM + ticking software timer to measure IR pulses
 	TCCR1 = 0b0001 << CS10; // Timer 1 = CLK = ~32 kHz PWM
-	GTCCR = 1 << PWM1B | 0b10 << COM1B0; // PWM mode
+	GTCCR = 1 << PWM1B | 0b10 << COM1B0; // PWM on OC1B
 
-	PWM_R = 0; // OCR0B
-	PWM_G = 0; // OCR1B
-	PWM_B = 0; // OCR0A
+	PWM_R = 0; // OCR0B alias
+	PWM_G = 0; // OCR1B alias
+	PWM_B = 0; // OCR0A alias
 
 	MCUCR = 0b01 << ISC00; // INT0 triggers on both edges
 	GIMSK = 1 << INT0; // enable INT0
