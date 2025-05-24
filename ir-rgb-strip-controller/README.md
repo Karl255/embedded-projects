@@ -1,16 +1,20 @@
 # tiny-ir-rgb
 
-An IR (NEC) RGB LED strip controller powered by an ATtiny45/85.
+An IR RGB LED strip controller powered by an ATtiny45/85.
 
 Features:
+- fade between static colors
 - color-cycle animations - easily customisable state machines
-- remembers state in EEPROM - to instantly resume after a power loss
-- NEC infrared remote control (custom library)
-	- reliable operation even with the internal RC oscillator
+- remembers state in EEPROM - to instantly resume after an unexpected power loss
+- infrared remote control (via custom library)
+    - Samsung32-like pulse-distance protocol (customisable for different pulse-distance protocols)
+	- reliable operation even with the internal RC oscillator due to start bit sync
 	- non-blocking operation so animations remain smooth
-- low MCU program memory requirements - 2634 bytes (could probably be reduced to fit the ATtiny25)
+- low MCU program memory requirements - 2656 bytes (could probably be reduced to fit into 2k)
 
-Feel free to use the NEC IR code and adjust it for your own purpose.
+Feel free to use the IR code and adjust it for your own purpose.
+
+For a remote control button reference see src/include/control.h
 
 Dependencies: none.
 

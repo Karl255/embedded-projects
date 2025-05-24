@@ -1,7 +1,7 @@
 #include <avr/io.h>
 #include <avr/interrupt.h>
 #include <init.h>
-#include <ir_NEC.h>
+#include <ir_read.h>
 #include <control.h>
 #include <mode_static.h>
 #include <mode_rg_cycle.h>

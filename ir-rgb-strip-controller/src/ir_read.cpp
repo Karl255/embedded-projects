@@ -22,10 +22,23 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
+/* Decodes a protocol that is similar to the SAMSUNG32 protocol: https://www.mikrocontroller.net/articles/IRMP_-_english#SAMSUNG32 */
+
+/*
+The implementation roughly reads a protocol described as (non-formal syntax):
+u = 0.5ms
+start_bit = 9u burst, 9u pause
+data = {0: (1u burst, 1u pause), 1: (1u burst, 3u pause)}
+end_bit = 1u burst, 1u pause
+
+transmission = start_bit, data, end_bit
+repeat = 9u burst, 4u burst
+*/
+
 #include <avr/io.h>
 #include <avr/interrupt.h>
 #include <util/delay.h>
-#include <ir_NEC.h>
+#include <ir_read.h>
 #include <control.h>
 
 // 0.02 ms timeout
@@ -42,7 +55,7 @@ enum class IrCommStep : uint8_t {
 
 volatile uint16_t ir_timer = 0;
 
-/// @brief The measured NEC protocil "u" unit measured in ir_timer units. "u" is the largest common divisor between all pulse lengths in an NEC protocol transmission (562.5 us).
+/// @brief The measured protocol "u" unit measured in ir_timer units.
 volatile uint8_t measured_u = 1;
 volatile struct IrReadout ir_readout;
 
@@ -79,7 +92,7 @@ ISR(INT0_vect) {
 
 		case IrCommStep::sync:
 			if (_read_ir() == 1) {
-				uint8_t _measured_u = ir_timer / 16;
+				uint8_t _measured_u = ir_timer / 9;
 				measured_u = _measured_u > 0 ? _measured_u : 1;
 				ir_timer = 0;
 
@@ -94,7 +107,7 @@ ISR(INT0_vect) {
 			if (_read_ir() == 0) {
 				uint8_t pulse = ir_timer;
 
-				if (pulse > 5 * measured_u) {
+				if (pulse > 7 * measured_u) {
 					step = IrCommStep::payload;
 				} else {
 					step = IrCommStep::pause;
@@ -111,8 +124,9 @@ ISR(INT0_vect) {
 				ir_timer = 0;
 			} else {
 				uint8_t pulse = ir_timer;
+				ir_timer = 0;
 
-				if (pulse > 2 * measured_u) {
+				if (pulse > 3 * measured_u) {
 					payload[payload_index] |= 1 << payload_bit;
 				}
 
@@ -156,7 +170,7 @@ ISR(INT0_vect) {
 ISR(TIMER1_OVF_vect) {
 	ir_timer++;
 
-	if (ir_timer > IR_TIMER_TIMEOUT) {
+	if (step != IrCommStep::idle && ir_timer > IR_TIMER_TIMEOUT) {
 		handle_error();
 	}
 }
