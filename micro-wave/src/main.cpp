@@ -1,4 +1,5 @@
 #include <avr/io.h>
+#include <util/delay.h>
 
 /*
 Timer4 OCs:
@@ -14,6 +15,7 @@ Timer4 OCs:
 
 void init(void) {
 	// PLL runs at 96 MHz
+	// PWM on OC4A at 187.5 KHz (/ 256 / 2)
 	
 	PLLCSR |= 0
 		| 0 << PINDIV // PLL input prescaler, should be 1 with a 16MHz clock source, but we're cheeky here
@@ -37,10 +39,13 @@ void init(void) {
 }
 
 int main() {
-	init();
-	OCR4A = 127;
+	//init();
+	DDRB = 0xff;
 	
 	for (;;) {
+		//OCR4A++;
+		PORTB++;
+		_delay_us(10);
 	}
 	
 	return 0;
