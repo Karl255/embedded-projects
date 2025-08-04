@@ -1,0 +1,78 @@
+#pragma once
+
+#include <stddef.h>
+#include <stdint.h>
+#include <avr/pgmspace.h>
+#include <math.h>
+
+#define sin_step(i) ( (uint8_t)round(127 * sin(2 * M_PI * i / 256)) )
+
+const uint8_t SIN_1_4[] PROGMEM = {
+	sin_step(0),
+	sin_step(1),
+	sin_step(2),
+	sin_step(3),
+	sin_step(4),
+	sin_step(5),
+	sin_step(6),
+	sin_step(7),
+	sin_step(8),
+	sin_step(9),
+	sin_step(10),
+	sin_step(11),
+	sin_step(12),
+	sin_step(13),
+	sin_step(14),
+	sin_step(15),
+	sin_step(16),
+	sin_step(17),
+	sin_step(18),
+	sin_step(19),
+	sin_step(20),
+	sin_step(21),
+	sin_step(22),
+	sin_step(23),
+	sin_step(24),
+	sin_step(25),
+	sin_step(26),
+	sin_step(27),
+	sin_step(28),
+	sin_step(29),
+	sin_step(30),
+	sin_step(31),
+	sin_step(32),
+	sin_step(33),
+	sin_step(34),
+	sin_step(35),
+	sin_step(36),
+	sin_step(37),
+	sin_step(38),
+	sin_step(39),
+	sin_step(40),
+	sin_step(41),
+	sin_step(42),
+	sin_step(43),
+	sin_step(44),
+	sin_step(45),
+	sin_step(46),
+	sin_step(47),
+	sin_step(48),
+	sin_step(49),
+	sin_step(50),
+	sin_step(51),
+	sin_step(52),
+	sin_step(53),
+	sin_step(54),
+	sin_step(55),
+	sin_step(56),
+	sin_step(57),
+	sin_step(58),
+	sin_step(59),
+	sin_step(60),
+	sin_step(61),
+	sin_step(62),
+	sin_step(63),
+	sin_step(64)
+};
+
+#undef sin_step

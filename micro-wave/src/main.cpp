@@ -1,5 +1,7 @@
 #include <avr/io.h>
+#include <avr/pgmspace.h>
 #include <util/delay.h>
+#include "samples.h"
 
 /*
 Timer4 OCs:
@@ -16,24 +18,24 @@ Timer4 OCs:
 void init(void) {
 	// PLL runs at 96 MHz
 	// PWM on OC4A at 187.5 KHz (/ 256 / 2)
-	
+
 	PLLCSR |= 0
 		| 0 << PINDIV // PLL input prescaler, should be 1 with a 16MHz clock source, but we're cheeky here
 		| 1 << PLLE; // PLL enabled
-	
+
 	PLLFRQ |= 0
 		| 0b01 << PLLTM0 // PLL Postcaler Factor = 2
 		| 0b1010 << PDIV0; // PLL output frequency = 96 MHz
-	
+
 	OCR4C = 0xff; // count to 255, Timer4 in 8 bit mode (default)
-	
+
 	TCCR4A |= 0
 		| 0b10 << COM4A0 // in phase-correct PWM mode, connect OC4A pin
 		| 1 << PWM4A; // enable PWM mode based on OCR4A comparator
-	
+
 	TCCR4B |= 0
 		| 0b0001 << CS40; // clock = PCK in asynchoronous mode
-	
+
 	TCCR4D |= 0
 		| 0b01 << WGM40; // Phase and Frequency Correct PWM, when PWM4x = 1
 }
@@ -41,12 +43,19 @@ void init(void) {
 int main() {
 	//init();
 	DDRB = 0xff;
-	
+
 	for (;;) {
 		//OCR4A++;
-		PORTB++;
-		_delay_us(10);
+
+		for (uint8_t i = 0; i < 4; i++) {
+			for (uint8_t j = 0; j < 64; j++) {
+				uint8_t sample = pgm_read_byte(&SIN_1_4[i % 2 == 0 ? j : 64 - j]);
+
+				PORTB = i >= 2 ? 127 - sample : 127 + sample;
+				_delay_us(5);
+			}
+		}
 	}
-	
+
 	return 0;
 }
